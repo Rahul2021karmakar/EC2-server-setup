@@ -1,0 +1,1 @@
+10 10 * * * /bin/bash -c 'source /etc/backup.env && /usr/local/bin/backup.sh' >> /var/log/postgres-backup.log 2>&1

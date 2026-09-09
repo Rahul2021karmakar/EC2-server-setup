@@ -1,0 +1,135 @@
+services:
+
+  cuddly_mongodb_dev:
+    image: mongo:8.0
+    container_name: cuddly_mongodb_dev
+    restart: unless-stopped
+
+    ports:
+      - "27017:27017"
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+
+    command: ["mongod", "--bind_ip_all", "--wiredTigerCacheSizeGB", "6"]
+
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+      
+    networks:
+      - cuddly_dev_net
+
+
+  cuddly_rabbitmq_dev:
+    image: rabbitmq:3-management
+    container_name: cuddly_rabbitmq_dev
+    restart: unless-stopped
+
+    ports:
+      - "5672:5672"      # RabbitMQ AMQP
+      - "15672:15672"    # RabbitMQ Management UI
+
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+
+    volumes:
+      - cuddly_rabbitmq_dev:/var/lib/rabbitmq
+
+    networks:
+      - cuddly_dev_net
+
+
+  cuddly_redis_dev:
+    image: redis:7.2-alpine
+    container_name: cuddly_redis_dev
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    command: >
+      sh -c "redis-server
+      --requirepass $$REDIS_PASSWORD
+      --appendonly yes"
+
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+    volumes:
+      - redis_data:/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD PING | grep PONG"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+    networks:
+      - cuddly_dev_net
+
+  cuddly_postgres_dev:
+    image: postgres:17-bookworm
+    container_name: cuddly_postgres_dev
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+    security_opt:
+      - no-new-privileges:true
+
+    networks:
+      - cuddly_dev_net
+
+
+
+volumes:
+  mongo_data:
+    driver: local
+  mongo_config:
+    driver: local
+  cuddly_rabbitmq_dev:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  cuddly_dev_net:
+    name: cuddly_dev_net
+    driver: bridge
+    attachable: true

@@ -1,0 +1,36 @@
+services:
+  mongodb-backup:
+    build: ./mongo
+    container_name: mongodb-backup-cron
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./backups/mongodb:/backup
+
+    networks:
+      - cuddly_dev_net
+    
+
+  postgres-backup:
+    build: ./postgres
+    container_name: postgres-backup-cron
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./backups/postgres:/backup
+
+    networks:
+      - cuddly_dev_net
+
+
+networks:
+  cuddly_dev_net:
+    name: cuddly_dev_net
+    driver: bridge
+    attachable: true
