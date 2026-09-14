@@ -1,5 +1,15 @@
 #!/bin/bash
-set -euo pipefail
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+set -a
+source "$SCRIPT_DIR/.env"
+set +a
+
+echo "AWS_REGION=$AWS_REGION"
+
+
 
 DATE=$(date +"%Y-%m-%d_%H-%M")
 
@@ -24,7 +34,7 @@ echo "$DATABASES"
 
 for DB in $DATABASES; do
 
-  FILE="/backup/${DB}-${DATE}.sql.gz"
+  FILE="/home/ubuntu/DevOps/backupDB/backups/${DB}-${DATE}.sql.gz"
 
   echo "Backing up database: $DB"
 

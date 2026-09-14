@@ -1,12 +1,21 @@
 #!/bin/bash
-set -euo pipefail
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+set -a
+source "$SCRIPT_DIR/.env"
+set +a
+
+echo "AWS_REGION=$AWS_REGION"
+
 
 DATE=$(date +"%Y-%m-%d_%H-%M")
 
 echo "Starting MongoDB backup at $(date)"
 
 # List all non-system databases
-DATABASES=$(mongosh \
+DATABASES=$(docker exec cuddly_mongodb_dev mongosh \
   --host "$MONGO_HOST" \
   --port "$MONGO_PORT" \
   --username "$MONGO_USERNAME" \
@@ -24,14 +33,14 @@ echo "Databases found: $DATABASES"
 
 for DB in $DATABASES; do
 
-  BACKUP_DIR="/backup/$DB-$DATE"
-  ARCHIVE="/backup/$DB-$DATE.tar.gz"
+  BACKUP_DIR="/home/ubuntu/DevOps/backupDB/backups/$DB-$DATE"
+  ARCHIVE="/home/ubuntu/DevOps/backupDB/backups/$DB-$DATE.tar.gz"
 
   echo "Backing up database: $DB"
 
   mkdir -p "$BACKUP_DIR"
 
-  mongodump \
+  docker exec cuddly_mongodb_dev mongodump \
     --host="$MONGO_HOST" \
     --port="$MONGO_PORT" \
     --username="$MONGO_USERNAME" \
@@ -40,7 +49,7 @@ for DB in $DATABASES; do
     --db="$DB" \
     --out="$BACKUP_DIR"
 
-  tar -czf "$ARCHIVE" -C /backup "$DB-$DATE"
+  tar -czf "$ARCHIVE" -C /home/ubuntu/DevOps/backupDB/backups "$DB-$DATE"
 
   aws s3 cp "$ARCHIVE" \
     "s3://$S3_BUCKET/mongodb/$DB/$DATE.tar.gz" \

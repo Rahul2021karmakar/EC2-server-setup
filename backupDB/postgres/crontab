@@ -1,3 +1,4 @@
-SHELL=/bin/sh
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
-40 10 * * * /bin/bash -c 'source /etc/backup.env && /usr/local/bin/backup.sh' >> /var/log/postgres-backup.log 2>&1
+20 12 * * * chmod +x /home/ubuntu/DevOps/backupDB/postgres/backup.sh && /home/ubuntu/DevOps/backupDB/postgres/backup.sh >> /home/ubuntu/DevOps/backupDB/logs/postgres-backup.log 2>&1
