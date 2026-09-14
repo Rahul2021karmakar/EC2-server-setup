@@ -17,7 +17,10 @@ export PGPASSWORD="$POSTGRES_PASSWORD"
 
 echo "Starting PostgreSQL backup at $(date)"
 
-DATABASES=$(psql \
+DATABASES=$(docker exec \
+  -e PGPASSWORD="$POSTGRES_PASSWORD" \
+  cuddly_postgres_dev \
+  psql \
   -h "$POSTGRES_HOST" \
   -p "$POSTGRES_PORT" \
   -U "$POSTGRES_USER" \
@@ -27,7 +30,8 @@ DATABASES=$(psql \
       FROM pg_database
       WHERE datistemplate = false
       AND datallowconn = true
-      AND datname NOT IN ('postgres');")
+      AND datname NOT IN ('postgres');"
+)
 
 echo "Databases found:"
 echo "$DATABASES"
@@ -36,9 +40,14 @@ for DB in $DATABASES; do
 
   FILE="/home/ubuntu/DevOps/backupDB/backups/${DB}-${DATE}.sql.gz"
 
+  echo "File path for backup: $FILE"
+
   echo "Backing up database: $DB"
 
-  pg_dump \
+  docker exec \
+    -e PGPASSWORD="$POSTGRES_PASSWORD" \
+    cuddly_postgres_dev \
+    pg_dump \
     -h "$POSTGRES_HOST" \
     -p "$POSTGRES_PORT" \
     -U "$POSTGRES_USER" \
