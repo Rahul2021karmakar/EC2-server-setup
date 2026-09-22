@@ -1,8 +1,8 @@
 services:
 
-  cuddly_mongodb_dev:
-    image: mongo:8.0
-    container_name: cuddly_mongodb_dev
+  cuddly-mongodb-dev:
+    image: mongo:8.0.13
+    container_name: cuddly-mongodb-dev
     restart: unless-stopped
 
     ports:
@@ -28,9 +28,9 @@ services:
       - cuddly_dev_net
 
 
-  cuddly_rabbitmq_dev:
+  cuddly-rabbitmq-dev:
     image: rabbitmq:3-management
-    container_name: cuddly_rabbitmq_dev
+    container_name: cuddly-rabbitmq-dev
     restart: unless-stopped
 
     ports:
@@ -48,9 +48,9 @@ services:
       - cuddly_dev_net
 
 
-  cuddly_redis_dev:
+  cuddly-redis-dev:
     image: redis:7.2-alpine
-    container_name: cuddly_redis_dev
+    container_name: cuddly-redis-dev
     restart: unless-stopped
 
     ports:
@@ -76,9 +76,9 @@ services:
     networks:
       - cuddly_dev_net
 
-  cuddly_postgres_dev:
+  cuddly-postgres-dev:
     image: postgres:17-bookworm
-    container_name: cuddly_postgres_dev
+    container_name: cuddly-postgres-dev
 
     restart: unless-stopped
 
