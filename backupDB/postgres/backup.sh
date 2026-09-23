@@ -19,7 +19,7 @@ echo "Starting PostgreSQL backup at $(date)"
 
 DATABASES=$(docker exec \
   -e PGPASSWORD="$POSTGRES_PASSWORD" \
-  cuddly_postgres_dev \
+  cuddly-postgres-dev \
   psql \
   -h "$POSTGRES_HOST" \
   -p "$POSTGRES_PORT" \
@@ -46,7 +46,7 @@ for DB in $DATABASES; do
 
   docker exec \
     -e PGPASSWORD="$POSTGRES_PASSWORD" \
-    cuddly_postgres_dev \
+    cuddly-postgres-dev \
     pg_dump \
     -h "$POSTGRES_HOST" \
     -p "$POSTGRES_PORT" \

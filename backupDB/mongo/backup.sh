@@ -15,7 +15,7 @@ DATE=$(date +"%Y-%m-%d_%H-%M")
 echo "Starting MongoDB backup at $(date)"
 
 # List all non-system databases
-DATABASES=$(docker exec cuddly_mongodb_dev mongosh \
+DATABASES=$(docker exec cuddly-mongodb-dev mongosh \
   --host "$MONGO_HOST" \
   --port "$MONGO_PORT" \
   --username "$MONGO_USERNAME" \
@@ -40,7 +40,7 @@ for DB in $DATABASES; do
 
   mkdir -p "$BACKUP_DIR"
 
-  docker exec cuddly_mongodb_dev mongodump \
+  docker exec cuddly-mongodb-dev mongodump \
     --host="$MONGO_HOST" \
     --port="$MONGO_PORT" \
     --username="$MONGO_USERNAME" \
