@@ -1,8 +1,8 @@
 services:
 
-  cuddly-mongodb-dev:
+  cuddly-mongodb-qa:
     image: mongo:8.0.13
-    container_name: cuddly-mongodb-dev
+    container_name: cuddly-mongodb-qa
     restart: unless-stopped
 
     ports:
@@ -25,12 +25,12 @@ services:
       start_period: 20s
       
     networks:
-      - cuddly_dev_net
+      - cuddly_qa_net
 
 
-  cuddly-rabbitmq-dev:
+  cuddly-rabbitmq-qa:
     image: rabbitmq:3-management
-    container_name: cuddly-rabbitmq-dev
+    container_name: cuddly-rabbitmq-qa
     restart: unless-stopped
 
     ports:
@@ -42,15 +42,15 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
 
     volumes:
-      - cuddly_rabbitmq_dev:/var/lib/rabbitmq
+      - cuddly_rabbitmq_qa:/var/lib/rabbitmq
 
     networks:
-      - cuddly_dev_net
+      - cuddly_qa_net
 
 
-  cuddly-redis-dev:
+  cuddly-redis-qa:
     image: redis:7.2-alpine
-    container_name: cuddly-redis-dev
+    container_name: cuddly-redis-qa
     restart: unless-stopped
 
     ports:
@@ -74,11 +74,11 @@ services:
       retries: 3
 
     networks:
-      - cuddly_dev_net
+      - cuddly_qa_net
 
-  cuddly-postgres-dev:
+  cuddly-postgres-qa:
     image: postgres:17-bookworm
-    container_name: cuddly-postgres-dev
+    container_name: cuddly-postgres-qa
 
     restart: unless-stopped
 
@@ -112,7 +112,7 @@ services:
       - no-new-privileges:true
 
     networks:
-      - cuddly_dev_net
+      - cuddly_qa_net
 
 
 
@@ -121,7 +121,7 @@ volumes:
     driver: local
   mongo_config:
     driver: local
-  cuddly_rabbitmq_dev:
+  cuddly_rabbitmq_qa:
     driver: local
   redis_data:
     driver: local
@@ -129,7 +129,7 @@ volumes:
     driver: local
 
 networks:
-  cuddly_dev_net:
-    name: cuddly_dev_net
+  cuddly_qa_net:
+    name: cuddly_qa_net
     driver: bridge
     attachable: true
