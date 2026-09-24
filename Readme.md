@@ -5,4 +5,4 @@ mongodb://cuddlyAdmindev:SBg7qgcuNwnJqKIQtPutruLQm0RmzpzavJce4ReZf98@13.202.109.
 scp -i /home/rahul/Downloads/Projects/DST/Cuddly-Duddly/cuddly-duddly-dev.pem -r /home/rahul/Downloads/Projects/DST/Cuddly-Duddly/DevOps ubuntu@13.202.109.78:/home/ubuntu/
 
 rsync -avz -e "ssh -i /home/rahul/Downloads/Projects/DST/Cuddly-Duddly/cuddly-duddly-dev.pem" \
-/home/rahul/Downloads/Projects/DST/Cuddly-Duddly/DevOps/ ubuntu@3.110.206.145:/home/ubuntu/DevOps/
+/home/rahul/Downloads/Projects/DST/Cuddly-Duddly/DevOps/ ubuntu@3.111.37.33:/home/ubuntu/DevOps/
